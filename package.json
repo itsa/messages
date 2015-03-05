@@ -29,8 +29,8 @@
     },
     "dependencies": {
         "polyfill": "itsa/polyfill",
-        "js-ext": "itsa/js-ext",
         "utils": "itsa/utils",
+        "js-ext": "itsa/js-ext",
         "event": "itsa/event"
     },
     "devDependencies": {
