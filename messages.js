@@ -42,13 +42,20 @@ require('polyfill');
     messages = {
         message: function(message, options) {
             var messagePromise = global.Promise.manage(),
-                emitter, level, timeout;
+                emitter, level, timeout, icon, stayActive;
+            message || (message='');
             options || (options={});
             emitter = options.emitter || 'global';
+            icon = options.icon;
             level = MESSAGE_LEVELS[options.level] || MESSAGE_LEVELS[1];
             timeout = options.timeout;
+            stayActive = options.stayActive;
             messagePromise.merge(options);
-            messagePromise.content = message || '';
+            stayActive && messagePromise.stayActive(stayActive);
+            if (icon) {
+                message = '<div class="dialog-message-icon"><i icon="'+icon+'"></i></div><div class="dialog-message">'+message+'</div>';
+            }
+            messagePromise.content = message;
             if ((typeof timeout==='number') && (timeout>0)) {
                 // with nothing to notify it was timeout
                 later(messagePromise.fulfill, timeout);
@@ -56,21 +63,29 @@ require('polyfill');
             Event.emit(options.target || global, emitter+':'+level, {messagePromise: messagePromise});
             return messagePromise;
         },
-        alert: function(message) {
+        alert: function(message, icon) {
             return this.message(message, {
-                footer: '<button class="pure-button pure-button-primary">Ok</button>'
+                footer: '<button class="pure-button pure-button-primary">Ok</button>',
+                icon: icon
             });
         },
         warn: function(message) {
             return this.message(message, {
                 footer: '<button class="pure-button pure-button-primary">Ok</button>',
+                icon: 'alert',
                 level: 2
             });
         },
-        prompt: function(message, defaultValue, label) {
-            var placeholder = defaultValue ? ' value="'+String(defaultValue)+'"' : '';
+        prompt: function(message, options) {
+            var placeholder, defaultValue, label, icon, validate;
+            options || (options={});
+            defaultValue = options.defaultValue;
+            label = options.label;
+            icon = options.icon;
+            validate = options.validate;
+            placeholder = defaultValue ? ' value="'+String(defaultValue)+'"' : '';
             if ((typeof message ==='string') || (message!=='')) {
-                message = '<div class="message">'+message+'</div>';
+                message = '<div class="dialog-prompt">'+message+'</div>';
             }
             else {
                 message = '';
@@ -79,9 +94,12 @@ require('polyfill');
             return this.message(
                 '<div class="pure-form">'+message+label+'<input id="iprompt" type="text"'+placeholder+' fm-defaultitem="true" fm-primaryonenter="true"></div>',
                 {
-                   footer: '<button is="cancel" class="pure-button">Cancel</button><button is="ok" class="pure-button pure-button-primary">Ok</button>'
+                    footer: '<button is="cancel" class="pure-button">Cancel</button><button is="ok" class="pure-button pure-button-primary">Ok</button>',
+                    icon: icon,
+                    validate: validate
                 }
             ).then(function(container) {
+console.warn(container.getOuterHTML());
                 var button = container.getElement('button');
                 if (button.getAttr('is')==='ok') {
                     return container.getElement('input').getValue();
@@ -100,6 +118,7 @@ require('polyfill');
             messages.message(msg, {
                 header: 'Javascript-error (line '+line+')',
                 footer: url,
+                icon: 'error',
                 level: 3
             });
             return true;
