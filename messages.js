@@ -21,7 +21,7 @@ require('polyfill');
     var NAME = '[messages]: ',
         MESSAGE_LEVELS = {
             1: 'message',
-            2: 'warning',
+            2: 'warn',
             3: 'error',
             4: 'statusmessage' // message that should hold for minimum time, and/or removes by itself (IO uses these)
         },
