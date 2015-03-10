@@ -22,7 +22,8 @@ require('polyfill');
         MESSAGE_LEVELS = {
             1: 'message',
             2: 'warning',
-            3: 'error'
+            3: 'error',
+            4: 'statusmessage' // message that should hold for minimum time, and/or removes by itself (IO uses these)
         },
         createHashMap = require('js-ext/extra/hashmap.js').createMap,
         later = require('utils').later,
@@ -99,7 +100,6 @@ require('polyfill');
                     validate: validate
                 }
             ).then(function(container) {
-console.warn(container.getOuterHTML());
                 var button = container.getElement('button');
                 if (button.getAttr('is')==='ok') {
                     return container.getElement('input').getValue();
