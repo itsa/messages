@@ -78,13 +78,13 @@ require('polyfill');
             });
         },
         prompt: function(message, options) {
-            var placeholder, defaultValue, label, icon, validate;
+            var placeholder, defaultValue, placeholder, label, icon;
             options || (options={});
             defaultValue = options.defaultValue;
             label = options.label;
             icon = options.icon;
-            validate = options.validate;
-            placeholder = defaultValue ? ' value="'+String(defaultValue)+'"' : '';
+            defaultValue = defaultValue ? ' value="'+defaultValue+'"' : '';
+            placeholder = placeholder ? ' placeholder="'+placeholder+'"' : '';
             if ((typeof message ==='string') || (message!=='')) {
                 message = '<div class="dialog-prompt">'+message+'</div>';
             }
@@ -93,11 +93,10 @@ require('polyfill');
             }
             label = (typeof label==='string') ? (label='<label for="iprompt">'+label+'</label>') : '';
             return this.message(
-                '<div class="pure-form">'+message+label+'<input id="iprompt" type="text"'+placeholder+' fm-defaultitem="true" fm-primaryonenter="true"></div>',
+                '<div class="pure-form">'+message+label+'<input id="iprompt" type="text"'+placeholder+defaultValue+' fm-defaultitem="true" fm-primaryonenter="true"></div>',
                 {
                     footer: '<button is="cancel" class="pure-button">Cancel</button><button is="ok" class="pure-button pure-button-primary">Ok</button>',
-                    icon: icon,
-                    validate: validate
+                    icon: icon
                 }
             ).then(function(container) {
                 var button = container.getElement('button');
