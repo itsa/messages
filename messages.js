@@ -6,8 +6,8 @@
  * New BSD License - http://choosealicense.com/licenses/bsd-3-clause/
  *
  *
- * @module panel
- * @class Panel
+ * @module messages
+ * @class Messages
  * @since 0.0.1
 */
 
@@ -41,6 +41,23 @@ require('polyfill');
     Event = require('event');
 
     messages = {
+        /**
+         * Sends a message (emits) and returns a promise. All option-properties will be merged into the promise.
+         * (even when not defined in the api)
+         *
+         * @method message
+         * @param message {String} The message to be send
+         * @param [options] {Object} The instance that is going to detach the customEvent
+         * @param [options.emitter='global'] {String} the emitter of the message, will be used as emitterName of the customEvent.
+         * @param [options.icon] {String} an icon-name to be used (fe "alert"). The icon-name should be defined by the `icons`-module.
+         * @param [options.level=1] {Number} The level --> 1='message', 2='warn', 3='error', 4='statusmessage'.
+         * @param [options.header] {String} Can be used by a messagehandler to render the header.
+         * @param [options.footer] {String} Can be used by a messagehandler to render the footer.
+         * @param [options.timeout] {Number} When specified, the promise will be resolved after this period of time.
+         * @param [options.stayActive] {Number} When specified, the promise won't resolved within this period of time.
+         * @return {Promise}
+         * @since 0.0.1
+        */
         message: function(message, options) {
             var messagePromise = global.Promise.manage(),
                 emitter, level, timeout, icon, stayActive;
@@ -64,12 +81,31 @@ require('polyfill');
             Event.emit(options.target || global, emitter+':'+level, {messagePromise: messagePromise});
             return messagePromise;
         },
+
+        /**
+         * Sends a simple message
+         *
+         * @method alert
+         * @param message {String} The message to be send
+         * @param [icon] {String} an icon-name to be used (fe "alert"). The icon-name should be defined by the `icons`-module.
+         * @return {Promise}
+         * @since 0.0.1
+        */
         alert: function(message, icon) {
             return this.message(message, {
                 footer: '<button class="pure-button pure-button-primary">Ok</button>',
                 icon: icon
             });
         },
+
+        /**
+         * Sends a warning-message.
+         *
+         * @method warn
+         * @param message {String} The message to be send
+         * @return {Promise}
+         * @since 0.0.1
+        */
         warn: function(message) {
             return this.message(message, {
                 footer: '<button class="pure-button pure-button-primary">Ok</button>',
@@ -77,6 +113,25 @@ require('polyfill');
                 level: 2
             });
         },
+        /**
+         * Sends a prompt-message with an input-element.
+         *
+         * @method prompt
+         * @param message {String} The message to be send
+         * @param [options] {Object} The instance that is going to detach the customEvent
+         * @param [options.emitter='global'] {String} the emitter of the message, will be used as emitterName of the customEvent.
+         * @param [options.defaultValue] {String} input's default value.
+         * @param [options.label] {String} The label for the input-element.
+         * @param [options.placeholder] {String} The placeholder for the input-element.
+         * @param [options.icon] {String} an icon-name to be used (fe "alert"). The icon-name should be defined by the `icons`-module.
+         * @param [options.header] {String} Can be used by a messagehandler to render the header.
+         * @param [options.footer] {String} Can be used by a messagehandler to render the footer.
+         * @param [options.level=1] {Number} The level --> 1='message', 2='warn', 3='error', 4='statusmessage'.
+         * @param [options.timeout] {Number} When specified, the promise will be resolved after this period of time.
+         * @param [options.stayActive] {Number} When specified, the promise won't resolved within this period of time.
+         * @return {Promise}
+         * @since 0.0.1
+        */
         prompt: function(message, options) {
             var placeholder, defaultValue, placeholder, label, icon;
             options || (options={});
@@ -105,6 +160,13 @@ require('polyfill');
                 }
             });
         },
+        /**
+         * To catch syste-errors into the message system. When set, errors won't appear in the console.
+         *
+         * @method catchErrors
+         * @param catchOrNot {Boolean} Whether errors should be catched or not.
+         * @since 0.0.1
+        */
         catchErrors: function(catchOrNot) {
             // DO NOT use `this` --> when merged, `this` will become the host
             // while `global.onerror` refers to `messages`
