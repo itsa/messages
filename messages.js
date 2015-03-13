@@ -133,7 +133,7 @@ require('polyfill');
          * @since 0.0.1
         */
         prompt: function(message, options) {
-            var placeholder, defaultValue, placeholder, label, icon;
+            var placeholder, defaultValue, label, icon;
             options || (options={});
             defaultValue = options.defaultValue;
             label = options.label;
