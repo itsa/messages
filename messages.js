@@ -13,6 +13,7 @@
 
 require('js-ext');
 require('polyfill');
+require('polyfill/lib/promise.js');
 
 (function (global) {
 
