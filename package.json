@@ -31,7 +31,7 @@
         "polyfill": "itsa/polyfill",
         "utils": "itsa/utils",
         "js-ext": "itsa/js-ext",
-        "event": "itsa/event"
+        "event": "itsa/itsa-event"
     },
     "devDependencies": {
         "chai": "^1.9.1",
