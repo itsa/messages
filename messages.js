@@ -39,7 +39,7 @@ require('polyfill/lib/promise.js');
         return;
     }
 
-    Event = require('event');
+    Event = require('itsa-event');
 
     messages = {
         /**
